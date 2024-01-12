@@ -2,3 +2,5 @@
 .env
 venv
 controllers/__pycache__/animerank.cpython-311.pyc
+models/__pycache__/user.cpython-311.pyc
+*.pyc
