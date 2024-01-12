@@ -2,6 +2,41 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 
+def get_user(id: int) -> dict:
+    load_dotenv()
+    query = f"""
+        select 
+            login.username,
+            login.email,
+            users.*
+        from airflow.login as login
+        join airflow.usuarios as users
+            on users.user_id = login.user_id
+        where login.user_id = {id}
+        """
+    try:
+        conn = psycopg2.connect(
+            host=os.environ.get("HOST"),
+            database=os.environ.get("DATABASE"),
+            user=os.environ.get("USER"),
+            password=os.environ.get("PASSWORD")
+        )
+
+        cursor = conn.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()
+        column_names = [desc[0] for desc in cursor.description]
+        result_dict = dict(zip(column_names, result))
+
+        return result_dict
+    except Exception as e:
+        print(f"Erro durante a inserção: {e}")
+        return 0
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 def create_user(username, email, password) -> int:
     import random
@@ -18,11 +53,12 @@ def create_user(username, email, password) -> int:
     """
     try:
         conn = psycopg2.connect(
-            host=os.environ.get("host"),
-            database=os.environ.get("database_name"),
-            user=os.environ.get("user"),
-            password=os.environ.get("password")
+            host=os.environ.get("HOST"),
+            database=os.environ.get("DATABASE"),
+            user=os.environ.get("USER"),
+            password=os.environ.get("PASSWORD")
         )
+
         cursor = conn.cursor()
         cursor.execute(insert_query, (numero_aleatorio, username, password, email))
         cursor.execute(insert_user)
@@ -44,19 +80,18 @@ def logar(email, password) -> dict:
     load_dotenv()
 
     insert_query = """
-        select log.user_id, log.username, log.email, users.* 
+        select log.user_id
         from airflow.login as log
-        join airflow.usuarios as users 
-            on users.user_id = log.user_id
         where log.email = %s and log.password = %s;
     """
     try:
         conn = psycopg2.connect(
-            host=os.environ.get("host"),
-            database=os.environ.get("database_name"),
-            user=os.environ.get("user"),
-            password=os.environ.get("password")
+            host=os.environ.get("HOST"),
+            database=os.environ.get("DATABASE"),
+            user=os.environ.get("USER"),
+            password=os.environ.get("PASSWORD")
         )
+
         cursor = conn.cursor()
         cursor.execute(insert_query, (email, password))
         result = cursor.fetchone()

@@ -5,10 +5,10 @@ from dotenv import load_dotenv
 def lista() -> list[dict]:
     load_dotenv()
     conn = psycopg2.connect(
-        host=os.environ.get("host"),
-        database=os.environ.get("database_name"),
-        user=os.environ.get("user"),
-        password=os.environ.get("password")
+        host=os.environ.get("HOST"),
+        database=os.environ.get("DATABASE"),
+        user=os.environ.get("USER"),
+        password=os.environ.get("PASSWORD")
     )
 
     cursor = conn.cursor()
@@ -30,10 +30,10 @@ def lista() -> list[dict]:
 def pesquisa(query: str) -> list[dict]:
     load_dotenv()
     conn = psycopg2.connect(
-        host=os.environ.get("host"),
-        database=os.environ.get("database_name"),
-        user=os.environ.get("user"),
-        password=os.environ.get("password")
+        host=os.environ.get("HOST"),
+        database=os.environ.get("DATABASE"),
+        user=os.environ.get("USER"),
+        password=os.environ.get("PASSWORD")
     )
 
     cursor = conn.cursor()
