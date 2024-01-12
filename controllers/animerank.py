@@ -1,12 +1,14 @@
+import os
 import psycopg2
-import json
+from dotenv import load_dotenv
 
 def lista() -> list[dict]:
+    load_dotenv()
     conn = psycopg2.connect(
-        host="192.168.1.80",
-        database="postgres",
-        user="postgres",
-        password="samuel04"
+        host=os.environ.get("host"),
+        database=os.environ.get("database_name"),
+        user=os.environ.get("user"),
+        password=os.environ.get("password")
     )
 
     cursor = conn.cursor()
@@ -26,11 +28,12 @@ def lista() -> list[dict]:
     return json_result
 
 def pesquisa(query: str) -> list[dict]:
+    load_dotenv()
     conn = psycopg2.connect(
-        host="192.168.1.80",
-        database="postgres",
-        user="postgres",
-        password="samuel04"
+        host=os.environ.get("host"),
+        database=os.environ.get("database_name"),
+        user=os.environ.get("user"),
+        password=os.environ.get("password")
     )
 
     cursor = conn.cursor()
@@ -49,45 +52,6 @@ def pesquisa(query: str) -> list[dict]:
 
     return json_result
 
-def create_user(username, email, password) -> int:
-    import random
-
-    numero_aleatorio = random.randint(1, 100000)
-
-    insert_query = """
-        INSERT INTO airflow.login (user_id, username, password, email)
-        VALUES (%s, %s, %s, %s);
-    """
-
-    # Conectando ao banco de dados e executando o INSERT
-    try:
-        # Conectar ao banco de dados
-        conn = psycopg2.connect(
-            host="192.168.1.80",
-            database="postgres",
-            user="postgres",
-            password="samuel04"
-        )
-        # Criar um cursor para executar a consulta
-        cursor = conn.cursor()
-
-        # Executar o INSERT usando parâmetros
-        cursor.execute(insert_query, (numero_aleatorio, username, password, email))
-
-        # Commit para efetivar a transação
-        conn.commit()
-
-        print("Inserção realizada com sucesso!")
-        return numero_aleatorio
-    except Exception as e:
-        print(f"Erro durante a inserção: {e}")
-        return 0
-    finally:
-        # Fechar cursor e conexão
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
 
 
 

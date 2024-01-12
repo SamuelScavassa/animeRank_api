@@ -1,0 +1,4 @@
+.idea
+.env
+venv
+controllers/__pycache__/animerank.cpython-311.pyc
